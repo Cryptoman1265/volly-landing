@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 const CONTRACT = "8UJ5UUCRry7aF73pYNvicc4xgPDjb3baG12kJV8TMiLL";
 const TRADE_URL =
   "https://lfj.gg/solana/trade/8UJ5UUCRry7aF73pYNvicc4xgPDjb3baG12kJV8TMiLL";
+const X_URL = "https://x.com/VollyTokenMill";
 
 function useParallax(active) {
   const ref = useRef(null);
@@ -60,7 +61,6 @@ function CoinField({ count = 24, running }) {
 export default function Home() {
   const [intro, setIntro] = useState(true);
   const [copied, setCopied] = useState(false);
-
   const parallaxRef = useParallax(intro);
 
   const copy = async () => {
@@ -72,29 +72,20 @@ export default function Home() {
   };
 
   const start = () => {
-    // kleine Fade-Out Sequenz
     setIntro(false);
-    const content = document.querySelector("#content");
-    content?.scrollIntoView({ behavior: "smooth" });
+    document.querySelector("#content")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <>
-      {/* ---------- GAME-INTRO ---------- */}
+      {/* ---------- Intro im gleichen Style ---------- */}
       {intro && (
         <section className="intro" ref={parallaxRef}>
           <div className="intro__bg" />
           <CoinField running />
-
           <div className="intro__layer intro__stars" aria-hidden="true" />
-          <img
-            className="intro__bird"
-            src="/volly-hero.png"
-            alt="VOLLY hero"
-            draggable="false"
-          />
+          <img className="intro__bird" src="/volly-hero.png" alt="VOLLY hero" />
           <img className="intro__logo" src="/volly-logo.png" alt="$VOLLY" />
-
           <div className="intro__title">
             <span className="pill">$VOLLY</span>
             <h1 className="title">
@@ -102,32 +93,28 @@ export default function Home() {
             </h1>
             <p className="subtitle">Press <b>Space</b> or click to start</p>
           </div>
-
-          <button className="btn btn--start" onClick={start}>
-            Start
-          </button>
+          <button className="btn btn--start" onClick={start}>Start</button>
+          <KeyCatcher onSpace={start} />
         </section>
       )}
 
-      {/* Space key = Start */}
-      {intro && (
-        <KeyCatcher onSpace={() => start()} />
-      )}
-
-      {/* ---------- NORMALE LANDING ---------- */}
+      {/* ---------- Hauptseite (einheitlicher Style) ---------- */}
       <main id="content" className={`wrap ${intro ? "is-hidden" : ""}`}>
+        {/* Header */}
         <header className="header">
           <img src="/volly-logo.png" alt="$VOLLY logo" className="logo" />
         </header>
 
-        <section className="grid">
-          <div>
+        {/* Hero-Section */}
+        <section className="grid section">
+          <div className="stack">
             <span className="pill">$VOLLY</span>
             <h1 className="title">
               The cheerful <span className="highlight">yellow</span> bird.
             </h1>
 
-            <div className="copy">
+            {/* Contract-Box */}
+            <div className="copy glass">
               <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   fill="currentColor"
@@ -142,16 +129,12 @@ export default function Home() {
               </button>
             </div>
 
+            {/* Buttons */}
             <div className="row">
               <a className="btn primary" href={TRADE_URL} target="_blank" rel="noopener">
                 Trade now
               </a>
-              <a
-                className="btn ghost"
-                href="https://x.com/VollyTokenMill"
-                target="_blank"
-                rel="noopener"
-              >
+              <a className="btn ghost" href={X_URL} target="_blank" rel="noopener">
                 X / Twitter
               </a>
             </div>
@@ -163,6 +146,39 @@ export default function Home() {
           </div>
         </section>
 
+        {/* About / Cards im einheitlichen Look */}
+        <section className="section">
+          <h2 className="h2">About VOLLY</h2>
+          <div className="cards">
+            <div className="card glass">
+              <div className="card__title">Simple</div>
+              <p className="muted">One cheerful page, clear actions: Trade & Social.</p>
+            </div>
+            <div className="card glass">
+              <div className="card__title">Fast</div>
+              <p className="muted">No extra libraries. Pure Next.js + CSS.</p>
+            </div>
+            <div className="card glass">
+              <div className="card__title">Fun</div>
+              <p className="muted">Tiny game-like intro, smooth transitions.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Links-Section (gleicher Kachel-Style) */}
+        <section className="section">
+          <h2 className="h2">Links</h2>
+          <div className="links">
+            <a className="link-tile glass" href={TRADE_URL} target="_blank" rel="noopener">
+              <span>Trade</span> <span className="arrow">↗</span>
+            </a>
+            <a className="link-tile glass" href={X_URL} target="_blank" rel="noopener">
+              <span>Twitter</span> <span className="arrow">↗</span>
+            </a>
+          </div>
+        </section>
+
+        {/* Footer */}
         <footer className="footer">
           <img src="/volly-bird.png" alt="VOLLY bird" width="32" height="32" />
           <span>$VOLLY</span>
@@ -172,7 +188,6 @@ export default function Home() {
   );
 }
 
-/** Fängt Space-Taste ab, um das Intro zu starten */
 function KeyCatcher({ onSpace }) {
   useEffect(() => {
     const onKey = (e) => {
